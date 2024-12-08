@@ -11,9 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IPhoneRepository, PhoneRepository>();
 builder.Services.AddScoped<ICityRepository, CityRepository>();
+builder.Services.AddScoped<IPersonRelationRepository, PersonRelationRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddLocalization(/*options => options.ResourcesPath = "Resources"*/);
+builder.Services.AddLocalization();
 
 builder.Services
     .AddControllers(options => { options.Filters.Add(new ValidateModelAttribute()); })

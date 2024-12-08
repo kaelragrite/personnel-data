@@ -14,19 +14,11 @@ public interface IPersonRepository
 
     Task<List<Person>> FilterAsync(FilterPersonQueryObject queryObject);
 
-    Task<RelationGroupReportResult> RelationGroupReportAsync();
-
     Task AddAsync(Person person);
 
     void Update(Person person);
 
     void Delete(Person person);
-    
-    Task<PersonRelation?> GetRelationAsync(RelationType relationType, int personId, int relatedPersonId);
-
-    Task AddRelationAsync(PersonRelation relation);
-
-    void DeleteRelation(PersonRelation relation);
 }
 
 public class PersonRepository : IPersonRepository
@@ -64,26 +56,9 @@ public class PersonRepository : IPersonRepository
         return persons;
     }
 
-    public async Task<RelationGroupReportResult> RelationGroupReportAsync()
-    {
-        var groupObjects = await _context.PersonRelations
-            .GroupBy(x => x.RelationType)
-            .Select(x => new RelationGroupReportResult.GroupReportObject(x.Key, x.Count()))
-            .ToListAsync();
-
-        return new RelationGroupReportResult(groupObjects);
-    }
-
     public async Task AddAsync(Person person) => await _context.Persons.AddAsync(person);
 
     public void Update(Person person) => _context.Persons.Update(person);
 
     public void Delete(Person person) => _context.Persons.Remove(person);
-
-    public async Task<PersonRelation?> GetRelationAsync(RelationType relationType, int personId, int relatedPersonId) =>
-        await _context.PersonRelations.FirstOrDefaultAsync(x => x.RelationType == relationType && x.PersonId == personId && x.RelatedPersonId == relatedPersonId);
-
-    public async Task AddRelationAsync(PersonRelation relation) => await _context.PersonRelations.AddAsync(relation);
-
-    public void DeleteRelation(PersonRelation relation) => _context.PersonRelations.Remove(relation);
 }

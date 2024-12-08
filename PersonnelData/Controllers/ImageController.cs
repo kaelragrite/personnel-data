@@ -18,7 +18,7 @@ public class ImageController : ControllerBase
 
     // [HttpPost("upload")]
     // [Route("{id}")]
-    // public async Task<IActionResult> UploadImage([FromRoute] int id, IFormFile file)
+    // public async Task<IActionResult> UploadImage([FromRoute] int id, [FromForm] IFormFile file)
     // {
     //     var person = await _uow.PersonRepository.GetAsync(id);
     //     if (person is null) return NotFound("person");
