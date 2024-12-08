@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Resources;
+using Microsoft.AspNetCore.Mvc;
 using PersonnelData.Data;
 using PersonnelData.Data.QueryObjects;
 using PersonnelData.Messages;
 using PersonnelData.Models;
-using System.IO;
 
 namespace PersonnelData.Controllers;
 
@@ -12,11 +12,13 @@ namespace PersonnelData.Controllers;
 public class PersonController : ControllerBase
 {
     private readonly IWebHostEnvironment _environment;
+    private readonly ResourceManager _resourceManager;
     private readonly IUnitOfWork _uow;
 
-    public PersonController(IWebHostEnvironment environment, IUnitOfWork uow)
+    public PersonController(IWebHostEnvironment environment, ResourceManager resourceManager, IUnitOfWork uow)
     {
         _environment = environment;
+        _resourceManager = resourceManager;
         _uow = uow;
     }
 
@@ -24,7 +26,11 @@ public class PersonController : ControllerBase
     public async Task<IActionResult> Get(int id)
     {
         var person = await _uow.PersonRepository.GetIncludedAsync(id);
-        if (person is null) return NotFound("person");
+        if (person is null)
+        {
+            var errorMessage = _resourceManager.GetString("PersonNotFound");
+            return NotFound(errorMessage);
+        }
 
         var fullPath = Path.Combine(_environment.ContentRootPath, "uploads", "images", person.ImageName ?? "NOT_EXISTS");
         if (!System.IO.File.Exists(fullPath))
@@ -58,7 +64,11 @@ public class PersonController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreatePersonRequest request)
     {
         var city = await _uow.CityRepository.GetAsync(request.CityId);
-        if (city is null) return NotFound("ქალაქი ვერ მოიძებნა");
+        if (city is null)
+        {
+            var errorMessage = _resourceManager.GetString("CityNotFound");
+            return NotFound(errorMessage);
+        }
 
         var person = new Person
         {
@@ -86,13 +96,21 @@ public class PersonController : ControllerBase
     public async Task<IActionResult> Update([FromRoute] int id, UpdatePersonRequest request)
     {
         var person = await _uow.PersonRepository.GetAsync(id);
-        if (person is null) return NotFound("person");
+        if (person is null)
+        {
+            var errorMessage = _resourceManager.GetString("PersonNotFound");
+            return NotFound(errorMessage);
+        }
 
         City? city = null;
         if (request.CityId is not null)
         {
             city = await _uow.CityRepository.GetAsync(request.CityId.Value);
-            if (city is null) return NotFound("city");   
+            if (city is null)
+            {
+                var errorMessage = _resourceManager.GetString("CityNotFound");
+                return NotFound(errorMessage);
+            }   
         }
 
         // Update Fields
@@ -142,7 +160,11 @@ public class PersonController : ControllerBase
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         var person = await _uow.PersonRepository.GetAsync(id);
-        if (person is null) return NotFound("person");
+        if (person is null)
+        {
+            var errorMessage = _resourceManager.GetString("PersonNotFound");
+            return NotFound(errorMessage);
+        }
 
         _uow.PersonRepository.Delete(person);
         await _uow.SaveChangesAsync();
@@ -164,10 +186,18 @@ public class PersonController : ControllerBase
     public async Task<IActionResult> CreatePersonRelation(CreatePersonRelationRequest createPersonRelationRequest)
     {
         var person = await _uow.PersonRepository.GetAsync(createPersonRelationRequest.PersonId);
-        if (person is null) return NotFound("person");
+        if (person is null)
+        {
+            var errorMessage = _resourceManager.GetString("PersonNotFound");
+            return NotFound(errorMessage);
+        }
 
         var relatedPerson = await _uow.PersonRepository.GetAsync(createPersonRelationRequest.RelatedPersonId);
-        if (relatedPerson is null) return NotFound("related-person");
+        if (relatedPerson is null)
+        {
+            var errorMessage = _resourceManager.GetString("RelatedPersonNotFound");
+            return NotFound(errorMessage);
+        }
 
         var relation = new PersonRelation
         {
@@ -189,7 +219,10 @@ public class PersonController : ControllerBase
         var relation = await _uow.PersonRepository
             .GetRelationAsync(deletePersonRelationRequest.RelationType, deletePersonRelationRequest.PersonId, deletePersonRelationRequest.RelatedPersonId);
         if (relation is null)
-            return NotFound("relation");
+        {
+            var errorMessage = _resourceManager.GetString("RelationNotFound");
+            return NotFound(errorMessage);
+        }
 
         _uow.PersonRepository.DeleteRelation(relation);
         await _uow.SaveChangesAsync();

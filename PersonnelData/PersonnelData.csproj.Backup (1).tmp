@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Resources\SharedResources.Designer.cs">
+      <Compile Update="Shared\Resources\SharedResources.Designer.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>SharedResources.resx</DependentUpon>
@@ -37,7 +37,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Resources\SharedResources.resx">
+      <EmbeddedResource Update="Shared\Resources\SharedResources.resx">
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>SharedResources.Designer.cs</LastGenOutput>
       </EmbeddedResource>

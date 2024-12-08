@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Localization;
+using PersonnelData.Resources;
 
 namespace PersonnelData.Messages.Validations;
 
@@ -9,20 +11,17 @@ public class MinimumAgeAttribute : ValidationAttribute
     public MinimumAgeAttribute(int minimumAge)
     {
         _minimumAge = minimumAge;
-        
-        ErrorMessage = $"Field value must be at least {_minimumAge} years old.";
     }
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        if (value is null)
-            return new ValidationResult("Field is required.");
-
         if (value is DateTime date)
         {
             var age = CalculateAge(date);
             if (age < _minimumAge)
+            {
                 return new ValidationResult(ErrorMessage);
+            }
         }
 
         return ValidationResult.Success;

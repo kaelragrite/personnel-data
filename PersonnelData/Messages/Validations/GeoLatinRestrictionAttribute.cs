@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Localization;
+using PersonnelData.Resources;
 
 namespace PersonnelData.Messages.Validations;
 
@@ -10,12 +12,9 @@ public class GeoLatinRestrictionAttribute : ValidationAttribute
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         var valueString = value?.ToString();
-        
-        if (string.IsNullOrWhiteSpace(valueString))
-            return new ValidationResult("Value is required.");
 
-        if (valueString.Any(x => GeorgianAlphabet.Contains(x)) && valueString.Any(x => EnglishAlphabet.Contains(x)))
-            return new ValidationResult("Value can't contain letters from Georgian and English alphabet at the same time.");
+        if (valueString != null && valueString.Any(x => GeorgianAlphabet.Contains(x)) && valueString.Any(x => EnglishAlphabet.Contains(x)))
+            return new ValidationResult(ErrorMessage);
 
         return ValidationResult.Success;
     }
