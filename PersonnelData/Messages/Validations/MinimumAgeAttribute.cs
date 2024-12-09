@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Localization;
-using PersonnelData.Resources;
 
 namespace PersonnelData.Messages.Validations;
 

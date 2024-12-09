@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PersonnelData.Data.QueryObjects;
-using PersonnelData.Data.ResultObjects;
 using PersonnelData.Models;
-using PersonnelData.Shared.Enums;
 
 namespace PersonnelData.Data;
 

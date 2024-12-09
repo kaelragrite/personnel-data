@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PersonnelData.Models;
+﻿using PersonnelData.Models;
 
 namespace PersonnelData.Data;
 
