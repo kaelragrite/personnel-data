@@ -66,8 +66,7 @@ public class PersonRelationController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet]
-    [Route("type-group-report")]
+    [HttpGet("type-group-report")]
     public async Task<IActionResult> TypeGroupReport()
     {
         var report = await _uow.RelationRepository.TypeGroupReportAsync();

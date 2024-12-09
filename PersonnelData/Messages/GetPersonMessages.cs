@@ -6,14 +6,14 @@ namespace PersonnelData.Messages;
 
 public class GetPersonResponse
 {
-    public GetPersonResponse(Person person, byte[]? imageData)
+    public GetPersonResponse(Person person, string? imageBase64String)
     {
         Name = person.Name;
         Surname = person.Surname;
         Gender = person.Gender;
         IdentificationNumber = person.IdentificationNumber;
         BirthDate = person.BirthDate;
-        ImageData = imageData;
+        ImageBase64String = imageBase64String;
         CityId = person.CityId;
         Phones = new List<PhoneDto>(person.Phones.Select(x => new PhoneDto
         {
@@ -32,7 +32,7 @@ public class GetPersonResponse
     public Gender Gender { get; }
     public string IdentificationNumber { get; }
     public DateTime BirthDate { get; }
-    public byte[]? ImageData { get; }
+    public string? ImageBase64String { get; }
     public int CityId { get; }
     public List<PhoneDto> Phones { get; }
     public List<PersonRelationDto> Relations { get; }

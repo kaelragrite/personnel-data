@@ -34,15 +34,17 @@ public class PersonController : ControllerBase
 
         var fullPath = Path.Combine(_environment.ContentRootPath, "uploads", "images", person.ImageName ?? "NOT_EXISTS");
         if (!System.IO.File.Exists(fullPath))
+        {
             return Ok(new GetPersonResponse(person, null));
+        }
 
         var fileBytes = await System.IO.File.ReadAllBytesAsync(fullPath);
+        var fileBase64 = Convert.ToBase64String(fileBytes);
 
-        return Ok(new GetPersonResponse(person, fileBytes));
+        return Ok(new GetPersonResponse(person, fileBase64));
     }
 
-    [HttpGet]
-    [Route("filter")]
+    [HttpGet("filter")]
     public async Task<IActionResult> Filter([FromQuery] FilterPersonQuery query)
     {
         var persons = await _uow.PersonRepository.FilterAsync(new FilterPersonQueryObject
@@ -91,8 +93,7 @@ public class PersonController : ControllerBase
         return Created(string.Empty, person.Id);
     }
 
-    [HttpPut]
-    [Route("{id}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromRoute] int id, UpdatePersonRequest request)
     {
         var person = await _uow.PersonRepository.GetAsync(id);
@@ -155,8 +156,7 @@ public class PersonController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete]
-    [Route("{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         var person = await _uow.PersonRepository.GetAsync(id);
